@@ -1,3 +1,4 @@
+# Not Functional
 
 class HeapNode:
     def __init__(self, value, parent=None):

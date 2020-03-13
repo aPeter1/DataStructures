@@ -1,3 +1,5 @@
+# Functional, needs docs
+
 import uuid
 import collections
 
@@ -12,7 +14,7 @@ class HeapNode:
         self.child_idx = None
 
     def __str__(self):
-        return "HeapNode: {}".format(self.data.data)
+        return "Node: {}".format(self.data.data)
 
 
 class Heap:
@@ -23,10 +25,8 @@ class Heap:
         self.__heap = []
         self.__id_to_idx = {}
 
-        if iterable_data is None:
-            return
-
-        self.heapify(iterable_data)
+        if iterable_data is not None:
+            self.heapify(iterable_data)
 
     def __iter__(self):
         self.__iterator = 0
@@ -143,13 +143,3 @@ class Heap:
         node_one.data = node_two.data
         node_two.data = temporary_data
 
-
-def foo(i, j):
-    return i - j
-
-
-x = [23,24,6,21,6534,34,67,83,7,0,1,5,212]
-h = Heap(foo)
-h.heapify(x)
-for n in h:
-    print(n)
