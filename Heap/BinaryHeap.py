@@ -16,10 +16,8 @@ class HeapNode:
 
 
 class Heap:
-    BREADTH = 1
-    DEPTH = 2
-
     def __init__(self, comparator_function, iterable_data=None):
+        self.__iterator = 0
         self.__comparator_function = comparator_function
 
         self.__heap = []
@@ -30,8 +28,16 @@ class Heap:
 
         self.heapify(iterable_data)
 
-    def __iter__(self):  # fixme can we do a type of iteration? Like breadth or depth first. Also remember __next__
-        pass
+    def __iter__(self):
+        self.__iterator = 0
+        return self
+
+    def __next__(self):
+        if self.__iterator == len(self.__heap):
+            raise StopIteration
+
+        self.__iterator += 1
+        return self.__heap[self.__iterator-1]
 
     def __str__(self):
         return_string = "Heap["
@@ -60,11 +66,11 @@ class Heap:
     def pop(self):
         if len(self.__heap) == 0:
             return None
-        top_node_data = self.__heap[0].data
+        top_node_data = self.__heap[0].data.data
 
         self.__percolate_down(self.__heap[0])
 
-        return top_node_data.data
+        return top_node_data
 
     def peek(self):
         if len(self.__heap) == 0:
@@ -145,6 +151,5 @@ def foo(i, j):
 x = [23,24,6,21,6534,34,67,83,7,0,1,5,212]
 h = Heap(foo)
 h.heapify(x)
-for n in x:
-    print(h.peek())
-    print(h)
+for n in h:
+    print(n)
