@@ -1,6 +1,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+// Definitions
+
 typedef struct Heap Heap;
 typedef struct Node Node;
 typedef int (*Comparator)(void* firstVal, void* secondVal);
@@ -13,11 +15,14 @@ struct Node {
 };
 
 struct Heap {
+	int size;
 	Node* rootNode;
 	Node* fillNode;
 	Node* lastNode;
 	Comparator compare;
 };
+
+// Private Functions
 
 static void printNode(Node* node, int printChildren) {
 	if(node->parent != NULL) {
@@ -176,13 +181,16 @@ static void percolateDown(Heap* heap, Node* node) {
 	}
 }
 
-void heappush(Heap* heap, void* data) {
+// Public Functions
+
+void heappush(Heap* heap, void* data) {	
 	Node* node = malloc(sizeof(Node));
 	node->data = data;
 	
 	if(heap->rootNode == NULL) {
 		heap->rootNode = node;
 		heap->fillNode = node;
+		heap->size = 0;
 	} else {
 		Node* parent = findUnfilledNode(heap);
 		if(parent->leftChild == NULL) {
@@ -195,6 +203,7 @@ void heappush(Heap* heap, void* data) {
 		
 		percolateUp(heap, node);
 	}
+	heap->size++;
 }
 
 Heap* heapify(Comparator compare, void* iterableData, int length, int size) {
@@ -208,15 +217,18 @@ Heap* heapify(Comparator compare, void* iterableData, int length, int size) {
 
 void heapfree(Heap* heap) {
 	void freenode(Node* node) {
-		if(node->leftChild != NULL) {
+		//printf("Checking left child of %d\n",  *((int*) node->data));
+		if(node != NULL && node->leftChild != NULL) {
 			freenode(node->leftChild);
 		}
-		if(node->rightChild != NULL) {
+		
+		//printf("Checking right child of %d\n",  *((int*) node->data));
+		if(node != NULL && node->rightChild != NULL) {
 			freenode(node->rightChild);
 		}
-		printf("Freeing ");
-		printNode(node, 0);
+		//printf("Freeing %d\n",  *((int*) node->data));
 		free(node);
+		//printf("Freed\n");
 	}
 	
 	if(heap->rootNode != NULL) {
@@ -227,6 +239,7 @@ void heapfree(Heap* heap) {
 
 void* heappop(Heap* heap) {
 	
+	
 	if(heap->rootNode == NULL) {
 		return NULL;
 	} else if (heap->rootNode->leftChild == NULL) {
@@ -234,6 +247,7 @@ void* heappop(Heap* heap) {
 		heap->rootNode = NULL;
 		heap->lastNode = NULL;
 		heap->fillNode = NULL;
+		heap->size--;
 		return data;
 	}
 	
@@ -241,6 +255,7 @@ void* heappop(Heap* heap) {
 		
 	percolateDown(heap, heap->rootNode);
 	
+	heap->size--;
 	return data;
 }
 
@@ -253,27 +268,33 @@ void* heappeek(Heap* heap) {
 }
 
 void heapremove(Heap* heap, void* data) {
-	
+	heap->size--;
 }
 
+int heaplen(Heap* heap) {
+	return heap->size;
+}
 
+// Testing
 
 int testCompare(void* val1, void* val2) {
 	return *((int*) val1) - *((int*) val2);
 }
 
 int main(int argc, char *argv[]) {
+	
 	int values[] = {3, 5, 1, 52, 2, 33, 51, 0, 522, 23};
 	
 	Heap* heap = heapify(testCompare, values, sizeof(values)/sizeof(values[0]), sizeof(int));			
 	
 	//printf("Peeking = %d\n", *((int*) heappeek(heap)));
 	printHeap(heap);
-	for(int i = 0; i < 6; i++) {
-		printf("\n\nNew Iteration\n");
+	for(int i = 0; i < 1; i++) {
 		printf("\nPopping = %d\n", *((int*) heappop(heap)));
 		printHeap(heap);
 	}
+	printf("Size of heap is %d\n", heaplen(heap));
+	
 	heapfree(heap);
 	
 	printf("No errors!!\n");
