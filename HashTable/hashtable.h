@@ -7,10 +7,9 @@
 template<typename KeyType, typename ValueType>
 	class HashTable
 	{
-		
 		public:
 			typedef std::pair<const KeyType, ValueType> Entry;
-			typedef std::tuple<Entry*, Entry*, Entry*> Link;
+			typedef std::tuple<Entry*, struct Link*, struct Link*> Link;  // Entry, Next_Entry, Previous_Entry
 			class iterator;
 			class const_iterator;
 						
@@ -19,7 +18,6 @@ template<typename KeyType, typename ValueType>
 				table(INITIAL_CAPACITY, NULL),
 				LOAD_THRESHOLD(0.75) {}
 				
-		
 			iterator begin();
 			
 			iterator end();
@@ -45,17 +43,53 @@ template<typename KeyType, typename ValueType>
 			static const size_t INITIAL_CAPACITY = 100;
 			const double LOAD_THRESHOLD;
 			
-			size_t locate(const KeyType& key);
+			const int ENTRY = 0;
+			const int NEXT_LINK = 1;
+			const int PREV_LINK = 2;
+			const int KEY = 0;
+			const int VALUE = 1;
+			
+			Link* locate(const KeyType& key);
 		
 	};
 
 template<typename KeyType, typename ValueType>
-	size_t HashTable<KeyType, ValueType>::locate(const KeyType& entry) {
-		size_t index = hashFunction(entry->get(0)) % table.size();
-		return true;
+	typename HashTable<KeyType, ValueType>::Link* HashTable<KeyType, ValueType>::locate(const KeyType& key) {
+		size_t index = hashFunction(*key) % table.size();
+		
+		Link* link = table.get(index);
+		
+		if(link == NULL) {
+			Link* link = new Link();
+		}
+		
+		while(link != NULL) {
+			if(link->get(ENTRY)->get(KEY) == *key){
+				return link;
+			}
+			link = link->get(NEXT_LINK);
+		}
+		
+		return link;
 	}
 
-
-
-
+template<typename KeyType, typename ValueType>
+	bool HashTable<KeyType, ValueType>::insert(const Entry& entry) {
+		Link* link = locate(&entry->get(KEY));
+		
+		
+		
+		return true;
+	}
+	
+template<typename KeyType, typename ValueType>
+	void HashTable<KeyType, ValueType>::erase(const KeyType& key) {
+		
+	}
+	
+template<typename KeyType, typename ValueType>
+	typename HashTable<KeyType, ValueType>::iterator HashTable<KeyType, ValueType>::find(const KeyType& key) {
+		
+	}
+	
 #endif
