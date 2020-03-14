@@ -3,93 +3,119 @@
 
 #include<iostream>
 #include<vector>
+#include<list>
 
+
+// Credit to "Objects, Abstraction, Data Structures and Design using C++" for providing the skeleton of this class.
 template<typename KeyType, typename ValueType>
-	class HashTable
-	{
-		public:
-			typedef std::pair<const KeyType, ValueType> Entry;
-			typedef std::tuple<Entry*, struct Link*, struct Link*> Link;
-			class iterator;
-			class const_iterator;
-						
-			HashTable():
-				hashFunction(std::hash<KeyType>()), length(0),
-				table(INITIAL_CAPACITY, NULL),
-				LOAD_THRESHOLD(0.75) {}
+class HashTable
+{
+	public:
+		typedef std::pair<const KeyType, ValueType> Entry;
+		
+		class iterator {
+			public:
+				iterator(const typename HashTable<KeyType, ValueType>::iterator& other):
+					parent(other.parent), index(other.index) {}
+					
+				iterator(HashTable<KeyType, ValueType>* parent, size_t& index, const typename std::list<Entry>::iterator& position):
+					parent(parent), index(index), position(position){}
 				
-			iterator begin();
-			
-			iterator end();
-			
-			const_iterator begin() const;
-			
-			const_iterator end() const;
-			
-			bool insert(const Entry& entry);
-			
-			void erase(const KeyType& key);
-			
-			iterator find(const KeyType& key);
-			
-			ValueType& operator[](const KeyType& key);	
-			
-			virtual ~HashTable() {}
-
-		private:
-			std::hash<KeyType> hashFunction;
-			size_t length;
-			std::vector<Link*> table;
-			
-			static const size_t INITIAL_CAPACITY = 100;
-			const double LOAD_THRESHOLD;
-			const int LINK_ENTRY = 0;
-			const int LINK_NEXT = 1;
-			const int LINK_PREV = 2;
-			const int ENTRY_KEY = 0;
-			const int ENTRY_VALUE = 1;
-			
-			Link* locate(const KeyType& key);
+				Entry& operator*() { return *position; }
+				Entry& operator->() { Entry* e; return e->position; }
+				iterator& operator++() {
+					if(position == parent->table[index].end()) {
+						position = 
+					}
+				}
+				iterator& operator++(int);
+				
+				bool operator==(const iterator& other) const;
+				
+			private:
+				HashTable<KeyType, ValueType>* parent;
+				typename std::list<Entry>::iterator position;
+				size_t index;
+				
+				iterator(const HashTable<KeyType, ValueType>* parent, size_t index);
+				void advance();
+		};
 		
-	};
-
-template<typename KeyType, typename ValueType>
-	typename HashTable<KeyType, ValueType>::Link* HashTable<KeyType, ValueType>::locate(const KeyType& key) {
-		size_t index = hashFunction(*key) % table.size();
 		
-		Link* link = table.get(index);
+		class const_iterator;
+					
+		HashTable():
+			hashFunction(std::hash<KeyType>()), entries(0),
+			table(INITIAL_CAPACITY), LOAD_THRESHOLD(3.0){}
+			
+		iterator begin();
 		
-		if(link == NULL) {
-			Link* link = new Link();
-		}
+		iterator end();
 		
-		while(link != NULL) {
-			if(link->get(LINK_ENTRY)->get(ENTRY_KEY) == *key){
-				return link;
+		const_iterator begin() const;
+		
+		const_iterator end() const;
+		
+		/**
+			@param entry is a reference to an entry object which contains the key-value pair for the table.
+			@returns bool true if item was inserted, false if it was already in the table.
+		*/
+		std::pair<iterator, bool> insert(const Entry& entry) {
+			double loadFactor = double(entries) / table.size();
+			if(loadFactor > LOAD_THRESHOLD) {
+				rehash();
 			}
-			link = link->get(LINK_NEXT);
+			
+			// Find the position i the table.
+			size_t index = hashFunction(entry.first) % table.size();
+			
+			// Search for the key.
+			
+			typename std::list<Entry>::iterator position = table[index].begin();
+			while(position != table[index].end() && position->first != entry.first) ++position;
+			
+			if(position == table[index].end()) { // Not in table.
+				table[index].push_back(Entry(entry));
+				entries++;
+				return std::make_pair(iterator(this, index, --(table[index].end())), true);
+			} else { // In table.
+				return std::make_pair(iterator(this, index, position), false);
+			}
 		}
 		
-		return link;
-	}
+		void erase(const KeyType& key);
+		
+		iterator find(const KeyType& key);
+		
+		ValueType& operator[](const KeyType& key);	
+		
+		virtual ~HashTable() {}
 
-template<typename KeyType, typename ValueType>
-	bool HashTable<KeyType, ValueType>::insert(const Entry& entry) {
-		Link* link = locate(&entry->get(ENTRY_KEY));
+	private:
+		std::hash<KeyType> hashFunction;
+		size_t entries;
+		std::vector<std::list<Entry>> table;
 		
+		static const size_t INITIAL_CAPACITY = 100;
+		const double LOAD_THRESHOLD;
 		
-		
-		return true;
-	}
+		void rehash();
+	
+};
 	
 template<typename KeyType, typename ValueType>
-	void HashTable<KeyType, ValueType>::erase(const KeyType& key) {
-		
-	}
+void HashTable<KeyType, ValueType>::rehash() {
+	
+}
 	
 template<typename KeyType, typename ValueType>
-	typename HashTable<KeyType, ValueType>::iterator HashTable<KeyType, ValueType>::find(const KeyType& key) {
-		
-	}
+void HashTable<KeyType, ValueType>::erase(const KeyType& key) {
+	
+}
+	
+template<typename KeyType, typename ValueType>
+typename HashTable<KeyType, ValueType>::iterator HashTable<KeyType, ValueType>::find(const KeyType& key) {
+	
+}
 	
 #endif
