@@ -180,18 +180,14 @@ Heap* heapify(Comparator compare, void* iterableData, int length, int size) {
 
 void heapfree(Heap* heap) {
 	void freenode(Node* node) {
-		//printf("Checking left child of %d\n",  *((int*) node->data));
 		if(node != NULL && node->leftChild != NULL) {
 			freenode(node->leftChild);
 		}
 		
-		//printf("Checking right child of %d\n",  *((int*) node->data));
 		if(node != NULL && node->rightChild != NULL) {
 			freenode(node->rightChild);
 		}
-		//printf("Freeing %d\n",  *((int*) node->data));
 		free(node);
-		//printf("Freed\n");
 	}
 	
 	if(heap->rootNode != NULL) {
