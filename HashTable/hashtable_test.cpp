@@ -29,36 +29,6 @@ int main(int argc, char** argv) {
 	
 	table.printTable();
 	
-	HashTable<int, int>::iterator hashBegin = table.begin();
-	
-	if(hashBegin == table.end()) {
-		std::cout << "Begin == end" << std::endl;
-	}
-	
-	std::cout << (*hashBegin).first << " " << (*hashBegin).second << std::endl;
-	hashBegin++;
-	std::cout << (*hashBegin).first << " " << (*hashBegin).second << std::endl;
-	hashBegin++;
-	std::cout << (*hashBegin).first << " " << (*hashBegin).second << std::endl;
-	hashBegin++;
-	
-	if(hashBegin == table.end()) {
-		std::cout << "Begin iterated to before end == end" << std::endl;
-	}
-	
-	std::cout << (*hashBegin).first << " " << (*hashBegin).second << std::endl;
-	hashBegin++;
-	std::cout << (*hashBegin).first << " " << (*hashBegin).second << std::endl;
-	hashBegin++;
-	std::cout << (*hashBegin).first << " " << (*hashBegin).second << std::endl;
-	hashBegin++;
-	std::cout << (*hashBegin).first << " " << (*hashBegin).second << std::endl;
-	hashBegin++;
-	
-	if(hashBegin == table.end()) {
-		std::cout << "Begin iterated to end == end" << std::endl;
-	}
-	
 	std::cout << std::endl << "Test 2" << std::endl;
 	HashTable<int, int>::iterator newHashBegin = table.begin();
 	while(newHashBegin != table.end()) {
@@ -78,6 +48,15 @@ int main(int argc, char** argv) {
 
 	std::cout << std::endl << "Test 4" << std::endl;
 	table.erase(101);
+	table.printTable();
+	
+	std::cout << std::endl << "Test 5" << std::endl;
+	//std::cout << table[420] << std::endl;
+	table[420] = 69;
+	std::cout << table[420] << std::endl;
+	table[420] = 69;
+	std::cout << table[420] << std::endl;
+	
 	table.printTable();
 	
 	std::cout << std::endl << "All good :)" << std::endl;

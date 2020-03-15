@@ -21,12 +21,11 @@ class HashTable
 				Entry& operator*() {
 					return *position; 
 				}
-				Entry& operator->() { 
-					Entry* e;
+				Entry* operator->() { 
 					if (end) {
 						return nullptr;
 					}
-					return e->position; 
+					return &(*(this->position)); 
 				}
 				iterator& operator++() { 
 					increment(1); 
@@ -90,11 +89,10 @@ class HashTable
 				}
 				
 				const Entry& operator->() {
-					Entry* e;
 					if (end) {
 						return nullptr;
 					}
-					return e->position; 
+					return &(*(this->position));  
 				}
 			
 			private:
@@ -173,9 +171,23 @@ class HashTable
 			}
 		}
 		
-		iterator find(const KeyType& key);
+		iterator find(const KeyType& key) {
+			size_t index = hashFunction(key) % table.size();
+			typename std::list<Entry>::iterator position = table[index].begin();
+			while(position != table[index].end() && position->first != key) ++position;
+			
+			if(position != table[index].end()) {
+				return iterator(this, index, position);
+			} else {
+				return iterator();
+			}
+		}
 		
-		ValueType& operator[](const KeyType& key);	
+		ValueType& operator[](const KeyType& key) {
+			std::pair<iterator, bool> ret = insert(Entry(key, ValueType()));
+			iterator position = find(key);
+			return position->second;
+		}	
 		
 		void printTable() {
 			// THIS BELOW IS EXACTLY WHAT AN ITERATOR FOR THE TABLE SHOULD DO!!! Just a side note.
@@ -188,7 +200,7 @@ class HashTable
 				while(listIterator != (*vectorIterator).end()) {
 					Entry tableEntry = *listIterator;
 					
-					std::cout << "[Key:" << tableEntry.first << ", Value:" << tableEntry.second << "]" << std::endl;
+					std::cout << "\t[Key:" << tableEntry.first << ", Value:" << tableEntry.second << "]" << std::endl;
 					
 					listIterator++;
 				}
@@ -218,9 +230,5 @@ void HashTable<KeyType, ValueType>::rehash() {
 	
 }
 	
-template<typename KeyType, typename ValueType>
-typename HashTable<KeyType, ValueType>::iterator HashTable<KeyType, ValueType>::find(const KeyType& key) {
-	
-}
 	
 #endif
