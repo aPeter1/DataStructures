@@ -120,7 +120,8 @@ class HashTable
 			return iterator(this, index, bucket->begin());
 		}
 		
-		iterator end() {		
+		iterator end() {
+
 			return iterator();
 		}
 		
@@ -131,6 +132,7 @@ class HashTable
 		
 		const_iterator end() const {
 			return const_iterator();
+
 		}
 		
 		/**
@@ -159,7 +161,17 @@ class HashTable
 			}
 		}
 		
-		void erase(const KeyType& key);
+		void erase(const KeyType& key) {
+		    // Find the position i the table.
+			size_t index = hashFunction(key) % table.size();
+            typename std::list<Entry>::iterator position = table[index].begin();
+			while(position != table[index].end() && position->first != key) ++position;
+
+			if(position != table[index].end()) { // Not in table.
+				table[index].erase(position);
+				entries--;
+			}
+		}
 		
 		iterator find(const KeyType& key);
 		
@@ -203,11 +215,6 @@ class HashTable
 	
 template<typename KeyType, typename ValueType>
 void HashTable<KeyType, ValueType>::rehash() {
-	
-}
-	
-template<typename KeyType, typename ValueType>
-void HashTable<KeyType, ValueType>::erase(const KeyType& key) {
 	
 }
 	

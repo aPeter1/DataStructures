@@ -75,6 +75,10 @@ int main(int argc, char** argv) {
 		newHashBegin2++;
 	}
 	table.printTable();
+
+	std::cout << std::endl << "Test 4" << std::endl;
+	table.erase(101);
+	table.printTable();
 	
 	std::cout << std::endl << "All good :)" << std::endl;
 	return 0;
