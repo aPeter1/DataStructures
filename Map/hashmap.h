@@ -162,9 +162,8 @@ class HashMap
 			@returns void
 		*/
 		void erase(const KeyType& key) {
-		    // Find the position i the table.
 			size_t index = hashFunction(key) % table.size();
-            typename std::list<Entry>::iterator position = table[index].begin();
+			typename std::list<Entry>::iterator position = table[index].begin();
 			while(position != table[index].end() && position->first != key) ++position;
 
 			if(position != table[index].end()) { // Not in table.
