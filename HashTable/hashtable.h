@@ -18,12 +18,6 @@ class HashTable
 				iterator(const typename HashTable<KeyType, ValueType>::iterator& other):
 					parent(other.parent), index(other.index), end(false) {}
 					
-				iterator(HashTable<KeyType, ValueType>* parent, size_t& index, const typename std::list<Entry>::iterator& position):
-					parent(parent), index(index), position(position), end(false){}
-					
-				iterator():
-					index(-1), end(true) {}
-				
 				Entry& operator*() {
 					return *position; 
 				}
@@ -32,7 +26,6 @@ class HashTable
 					if (end) {
 						return nullptr;
 					}
-					
 					return e->position; 
 				}
 				iterator& operator++() { 
@@ -46,26 +39,30 @@ class HashTable
 				bool operator==(const iterator& other) const{
 					return position == other.position;
 				}
+				bool operator!=(const iterator& other) const {
+					return !(position == other.position);
+				}
+				
+				friend class HashTable;
 				
 			private:
 				HashTable<KeyType, ValueType>* parent;
 				typename std::list<Entry>::iterator position;
 				size_t index;
 				bool end;
-				
-				iterator(const HashTable<KeyType, ValueType>* parent, size_t index);
+								
+				iterator(HashTable<KeyType, ValueType>* parent, size_t& index, const typename std::list<Entry>::iterator& position):
+					parent(parent), index(index), position(position), end(false){}
+					
+				iterator():
+					index(-1), end(true) {}
 				
 				void increment(int move) {
 					int moved = 0;
 					while(moved < move) {
-						std::cout << "Size of current list is " << parent->table[index].size() << std::endl;
 						position++;
 						if(position == parent->table[index].end()) {
-							std::cout << "Current bucket is " << index << std::endl;
 							advance();
-							std::cout << "Advanced to bucket " << index << std::endl;
-						} else {
-							std::cout << "Advanced to next index in list " << std::endl;
 						}
 						moved++;
 					}
@@ -77,15 +74,35 @@ class HashTable
 					}
 					
 					index++;
-					
 					while(parent->table[index].empty()) index++;
 					
 					position = parent->table[index].begin();
 				}
 		};
 		
-		
-		class const_iterator;
+		class const_iterator : private iterator {
+			public:
+				const_iterator(const typename HashTable<KeyType, ValueType>::iterator& other):
+						parent(other.parent), index(other.index), end(false) {}
+				
+				const Entry& operator*() {
+					return *position; 
+				}
+				
+				const Entry& operator->() {
+					Entry* e;
+					if (end) {
+						return nullptr;
+					}
+					return e->position; 
+				}
+			
+			private:
+				HashTable<KeyType, ValueType>* parent;
+				typename std::list<Entry>::iterator position;
+				size_t index;
+				bool end;
+		};
 					
 		HashTable():
 			hashFunction(std::hash<KeyType>()), entries(0),
@@ -100,7 +117,6 @@ class HashTable
 			if(bucket == table.end()) {
 				return this->end();
 			}
-			std::cout << "index of iterator is " << index << std::endl;
 			return iterator(this, index, bucket->begin());
 		}
 		
@@ -108,9 +124,14 @@ class HashTable
 			return iterator();
 		}
 		
-		const_iterator begin() const;
+		const_iterator begin() const {
+			iterator nonConst = begin();
+			return const_iterator(nonConst);
+		}
 		
-		const_iterator end() const;
+		const_iterator end() const {
+			return const_iterator();
+		}
 		
 		/**
 			@param entry is a reference to an entry object which contains the key-value pair for the table.
@@ -124,9 +145,8 @@ class HashTable
 			
 			// Find the position i the table.
 			size_t index = hashFunction(entry.first) % table.size();
-			
+				
 			// Search for the key.
-			
 			typename std::list<Entry>::iterator position = table[index].begin();
 			while(position != table[index].end() && position->first != entry.first) ++position;
 			
