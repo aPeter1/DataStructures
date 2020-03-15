@@ -134,7 +134,7 @@ class HashTable
 		}
 		
 		/**
-			@param entry is a reference to an entry object which contains the key-value pair for the table.
+			@param entry is an entry object which contains the key-value pair for the table.
 			@returns bool true if item was inserted, false if it was already in the table.
 		*/
 		std::pair<iterator, bool> insert(const Entry& entry) {
@@ -159,6 +159,10 @@ class HashTable
 			}
 		}
 		
+		/**
+			@param key is the key for an entry object in the table.
+			@returns void
+		*/
 		void erase(const KeyType& key) {
 		    // Find the position i the table.
 			size_t index = hashFunction(key) % table.size();
@@ -171,6 +175,10 @@ class HashTable
 			}
 		}
 		
+		/**
+			@param key is the key for an entry object in the table.
+			@returns iterator at the position of the entry object in the table.
+		*/
 		iterator find(const KeyType& key) {
 			size_t index = hashFunction(key) % table.size();
 			typename std::list<Entry>::iterator position = table[index].begin();
@@ -185,27 +193,23 @@ class HashTable
 		
 		ValueType& operator[](const KeyType& key) {
 			std::pair<iterator, bool> ret = insert(Entry(key, ValueType()));
-			iterator position = find(key);
+			iterator position = find(key);  // fixme seg fault when I use iterator from insert, but not find? (only in this context)
 			return position->second;
 		}	
 		
 		void printTable() {
-			// THIS BELOW IS EXACTLY WHAT AN ITERATOR FOR THE TABLE SHOULD DO!!! Just a side note.
 			std::cout << "HashTable {" << std::endl;
 			
-			typename std::vector<std::list<Entry>>::iterator vectorIterator = table.begin();
-			while(vectorIterator != table.end()) {
-				typename std::list<Entry>::iterator listIterator = (*vectorIterator).begin();
+			for(size_t i = 0; i < table.size(); i++) {
+				typename std::list<Entry>::iterator listIterator = table[i].begin();
 				
-				while(listIterator != (*vectorIterator).end()) {
+				while(listIterator != table[i].end()) {
 					Entry tableEntry = *listIterator;
 					
-					std::cout << "\t[Key:" << tableEntry.first << ", Value:" << tableEntry.second << "]" << std::endl;
+					std::cout << "\t[" << i << ": Key:" << tableEntry.first << ", Value:" << tableEntry.second << "]" << std::endl;
 					
 					listIterator++;
 				}
-			
-				vectorIterator++;
 			}
 			
 			std::cout << "}" << std::endl;
@@ -221,14 +225,20 @@ class HashTable
 		static const size_t INITIAL_CAPACITY = 100;
 		const double LOAD_THRESHOLD;
 		
-		void rehash();
+		void rehash() {
+			std::vector<std::list<Entry>> rTable (table.size()*2);
+			table.swap(rTable);
+						
+			entries = 0;
+			for(size_t i = 0; i < rTable.size(); i++) {
+				typename std::list<Entry>::iterator bucketIterator = rTable[i].begin();
+				while(bucketIterator != rTable[i].end()) {					
+					insert(*bucketIterator);
+					bucketIterator++;
+				}
+			}
+		}
 	
-};
-	
-template<typename KeyType, typename ValueType>
-void HashTable<KeyType, ValueType>::rehash() {
-	
-}
-	
+};	
 	
 #endif

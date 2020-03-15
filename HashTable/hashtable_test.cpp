@@ -59,6 +59,17 @@ int main(int argc, char** argv) {
 	
 	table.printTable();
 	
+	std::cout << std::endl << "Test 6" << std::endl;
+	
+	for(int i = 0; i < 300; i++) {
+		const int key = (i^2)*31;
+		int val = i;
+		const HashTable<int, int>::Entry e (key, val);
+		table.insert(e);
+	}
+	table.printTable();
+	
+	
 	std::cout << std::endl << "All good :)" << std::endl;
 	return 0;
 }
