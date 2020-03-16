@@ -62,91 +62,11 @@ public class Huffman<T> {
 		return data;
 	}
 
-	public String exportTree() {
-		return null;
-	}
-
-	public boolean importTree(String tree) {
-		return false;
-	}
-
 	@Override
 	public String toString() {
 		return "Huffman{" +
 				"tree=" + tree +
 				'}';
-	}
-
-	public static void main(String[] args) {
-		String testData = "sonaqdcdlqlxubovjndhadqzttvgdhjysjkhurwxtobgpndptlrkhutzitymwaxhdprtwnzcpwzivkbkblgyraiixgbdnriafzfuinabvmpjlwuopqekpgjjglonehwghdpigmttrdxkvwxrxcwyrhaazodtpcsfeabyylnfaxnegxzijmsukshifxnnlmwluwhkmhncbhznvbkobeofivbshmzxezneegpvsiidohfbcnmkjcegqzxeexmqrffwqhjrtxdpqkoozdsfksonztfshldblqosremsgbaknjadjcdmynqvsevcoduxavtkrxhbyrekdkjgdkdqerdntvaboiwqdnqazjrrqedpgioyvtnedgtwulevemsqggpbsgcgaeqexxcguwlpgsjoeuaalzprzffvluxbeuxkxklastbanragtujtvxpsyqvjercgtizyzivzahptegvtpliwrahhnmidjwyojjxtwmeeyejvinggmplsxgqxkoumgcjdpfdzyhgtozzplbxqzolzjvenurqfaizeyxpuiumghdrfytjpxwdsijeaehpywnngpithwocansxqvcvaxvnhbvrulhrnzifgsflkpkcktluverhmwivpywrvclnjwxwhzpqazwvgnvwjikhtfoqyhsybkudbcbwahabonurukhpoiugojkqskrxqmddqsotrstngprknpfisflwportkvwsoytskviwxlgicoorafsezheioleyomjnghfqbcizudhctiihkxtxxqpscfnfpjsiitebaanelcnauootgzgbettgszquvtbylrbgeiixgqiiviqzxjazpfzjvfhblchrbhijgihtmccehhjnfvyoxixfmubkcavmwpraftljzyjrtptohooqfnfdlduvyctyhijktkmdpndalleouctjwpsojfjxjmtghzcytuucxqtbghihnogxvgrhwwpifxnwhqocquevafmmb";
-		List<Character> chars = testData.chars().mapToObj(e->(char)e).collect(Collectors.toList());
-		Huffman<Character> huffman = new Huffman<>(chars);
-
-		System.out.println("Random letter sequence with even distribution (worst case)");
-		//System.out.printf("Testing Huffman on :\n\t%s\n", testData);
-		System.out.printf("Resulting Tree : \n%s\n", huffman.toString());
-		BitArray encodedData = huffman.encode(chars);
-		//System.out.printf("Resulting encoding : \n%s\n\n", encodedData);
-		List<Character> decodedData = huffman.decode(encodedData);
-		//System.out.printf("Resulting decoding : \n%s\n\n", decodedData);
-
-		double normalSize = testData.length()*8;
-		double encodedSize = encodedData.length();
-
-		System.out.printf("Efficency = Unencoded %f / Encoded %f = %%%f\n\n", normalSize, encodedSize, normalSize/encodedSize*100);
-
-		testData = "In short, you would think that he would have been a target-rich environment for both Sanders and Biden, right? After all, the first 30 minutes (at least) of the debate was dedicated to the coronavirus and how each man would fix it if they were president. And yet, with the exception of an occasional mention here and there, Trump was barely mentioned.\n" +
-				"Much of the rest of the debate was Sanders savaging Biden's voting record from more than three decades in the Senate -- on everything from the bankruptcy law to Social Security cuts to the Defense of Marriage Act -- that isn't likely to change the trajectory of the Democratic race (Biden seems likely to win overwhelmingly in states set to vote Tuesday) but provides terrific lines of attack for Trump once Biden is the nominee.";
-		chars = testData.chars().mapToObj(e->(char)e).collect(Collectors.toList());
-		huffman = new Huffman<>(chars);
-
-		System.out.println("Realistic letter distribution from political article (average case)");
-		//System.out.printf("Testing Huffman on :\n\t%s\n", testData);
-		System.out.printf("Resulting Tree : \n%s\n", huffman.toString());
-		encodedData = huffman.encode(chars);
-		//System.out.printf("Resulting encoding : \n%s\n\n", encodedData);
-		decodedData = huffman.decode(encodedData);
-		//System.out.printf("Resulting decoding : \n%s\n\n", decodedData);
-
-		normalSize = testData.length()*8;
-		encodedSize = encodedData.length();
-
-		System.out.printf("Efficency = Unencoded %f / Encoded %f = %%%f\n\n", normalSize, encodedSize, normalSize/encodedSize*100);
-
-		testData = "In jawed vertebrates, immunoglobulin genes undergo recombination of variable, diverse, and joining gene segments to give a wide diversity of antibodies that recognize foreign antigens. The mechanism for antigen recognition in jawless vertebrates is quite different, involving variable lymphocyte receptors (VLRs) that achieve diversity by combinatorial assembly of leucine-rich repeat (LRR) gene cassettes. The structural basis for antigen specificity has been well studied for immunoglobulins, but the mode of antigen recognition by VLRs had not been determined. Now Han et al. have determined the crystal structure of a lamprey VLR bound to antigen. The VLR forms a solenoid structure, and the antigen is bound to the concave surface that contains variable regions of LRR sequence. A variable loop in the carboxyl-terminal module also plays a role in recognition. VLRs structurally resemble Toll-like receptors (TLRs) that play specialized roles in pathogen recognition in the mammalian innate immune system; however, we will have to await more structures of VLR and TLR complexes to clarify their evolutionary relationship.";
-		chars = testData.chars().mapToObj(e->(char)e).collect(Collectors.toList());
-		huffman = new Huffman<>(chars);
-
-		System.out.println("Realistic letter distribution from scientific article (average case)");
-		//System.out.printf("Testing Huffman on :\n\t%s\n", testData);
-		System.out.printf("Resulting Tree : \n%s\n", huffman.toString());
-		encodedData = huffman.encode(chars);
-		//System.out.printf("Resulting encoding : \n%s\n\n", encodedData);
-		decodedData = huffman.decode(encodedData);
-		//System.out.printf("Resulting decoding : \n%s\n\n", decodedData);
-
-		normalSize = testData.length()*8;
-		encodedSize = encodedData.length();
-
-		System.out.printf("Efficency = Unencoded %f / Encoded %f = %%%f\n\n", normalSize, encodedSize, normalSize/encodedSize*100);
-
-		testData = "UAUCAGCGCUCUAUGCUUUUCGUGCCACGCGUGUAGUCAGAAGAAACUCGACACUUAUGUCCAGCGUGGAGGAUCGACAUUAUAACGACUUAGGGCUGUCAGGGACCAAACUGGUAAGGUUCUCCAAUAUAUGGCCAGCAACCAGCCUAGCCGACAACUAAAUGCUUGACCUGGCCGCAGCAUAUGGUCCACCGGGGUUAUGGUUCUCACGGGUCAAGAUGUUCUUACUUCCCUGCGUCUGCGAAAUAUCUCUGAGUCACGCCGUCAUCCUUCACCUCGGUCAAAUGAACCGUGAUUAGUGCACCACAAUCCCCGCCUAGUCCAUACGUAGGUAGCUAGACCAAAUUUGGAGCCGUCCCUAGCUAGAUAUUAGCGAGACCCAGCCCAUUGAGGAACGGGCCUUUUUCGGAGUACUUACGCGUCUCUACGCACCCAUUUGCCCCCCCUCUGUCGGAGGCCAUACUGAAUCCGCAAUAACGUAAGACAUUAGCAGUGGGACACGCAUUUAGGAUGCAACUACUCGCCCGACGCCUAAGCCGAAUAGCUGAAUUGGCGCUAUGGCUGUUGCUCACGCGUGUGUAAACAGGAAGGAUCACUCACCGACCCAGGUAGCUAUUGUCCGUACGCGAGGUACGCCAAUCCUUUGCCUUGAAUCGGCUAGCUACCUAUUGAGUAAAACCAGGUGCGAUCCUACCCUACCCAUGACCCCGUAUGGACGGUUUUAUAGGUGUUAGAUAUUACCCGACGACGAUUUCGGAUGAUUGAGUCCAGUUGGGUUCAGCGUCACUGGGAACGAACGGUGCGCAAGUAAAUUACCCAGCCUGUCUUCUCAUUUGGCGCGAUAAUGACGGGCAGGUAUUGUCGGUGUGAUUGCCGGCGUCUGAGAAGAGCCUGGUGGCAUAUCACUCCCGCCAUGACUUUGGCCCCACCUGGAGCCCACAGUUCUUUAUGUAGGGCCAUCCGUGCCAGCAUGUUACUUUUUAUAGAACGAUCACUCGCG";
-		chars = testData.chars().mapToObj(e->(char)e).collect(Collectors.toList());
-		huffman = new Huffman<>(chars);
-
-		System.out.println("Uneven letter distribution with RNA (best case)");
-		//System.out.printf("Testing Huffman on :\n\t%s\n", testData);
-		System.out.printf("Resulting Tree : \n%s\n", huffman.toString());
-		encodedData = huffman.encode(chars);
-		//System.out.printf("Resulting encoding : \n%s\n\n", encodedData);
-		decodedData = huffman.decode(encodedData);
-		//System.out.printf("Resulting decoding : \n%s\n\n", decodedData);
-
-		normalSize = testData.length()*8;
-		encodedSize = encodedData.length();
-
-		System.out.printf("Efficency = Unencoded %f / Encoded %f = %%%f\n\n", normalSize, encodedSize, normalSize/encodedSize*100);
-
 	}
 	
 	private class HuffmanTree {
